@@ -29,9 +29,6 @@ if( $calibration ) {
         $digits_found   = 0;
         for( $i = 0; $i < $length; $i++ ) {
             $char           = $buffer[$i];
-            if( $digits_found >= 2 ) {
-                break;
-            }
             if( !( is_numeric( $char ) ) ) {
                 continue;
             }
@@ -41,6 +38,7 @@ if( $calibration ) {
             }                
             else {
                 $digits[ 1 ] = $char;
+                $digits_found++;
             }
         }
         if( $digits_found === 1 && intval( $digits[ 1 ] ) === 0 ) {
