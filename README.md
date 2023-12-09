@@ -3,3 +3,4 @@
 
 ## Solutions
 Challenge 1: 54916
+Challenge 2: 
