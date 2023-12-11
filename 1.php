@@ -35,6 +35,39 @@
  * What is the sum of all of the calibration values?
 */
 
+function storeDigit(&$digits, &$digits_found, $value) {
+    if( $digits_found === 0 ) {
+        $digits[ 0 ] = $value;
+        $digits_found++;
+    }                
+    else {
+        $digits[ 1 ] = $value;
+        $digits_found++;
+    }
+}
+
+function findNumberAsText( $char_buffer ) {
+    $valid_string_as_number_values  = [
+        1 => "one", 
+        2 => "two", 
+        3 => "three", 
+        4 => "four", 
+        5 => "five", 
+        6 => "six", 
+        7 => "seven", 
+        8 => "eight", 
+        9 => "nine"
+    ];
+    $found = 0;
+    foreach( $valid_string_as_number_values as $key => $value ) {
+        if( strpos( $char_buffer, $value ) !== false ) {
+            $found = $key;
+            break;
+        }
+    }
+    return $found;
+}
+
 function challenge1Part1() {
     $calibration    = fopen( './data/1.txt', 'r' );
     $total_sum      = 0;
@@ -44,18 +77,11 @@ function challenge1Part1() {
             $length         = strlen( $buffer );
             $digits_found   = 0;
             for( $i = 0; $i < $length; $i++ ) {
-                $char           = $buffer[$i];
+                $char = $buffer[$i];
                 if( !( is_numeric( $char ) ) ) {
                     continue;
                 }
-                if( $digits_found === 0 ) {
-                    $digits[ 0 ] = $char;
-                    $digits_found++;
-                }                
-                else {
-                    $digits[ 1 ] = $char;
-                    $digits_found++;
-                }
+                storeDigit($digits, $digits_found, $char);
             }
             if( $digits_found === 1 && intval( $digits[ 1 ] ) === 0 ) {
                 $digits[ 1 ] = $digits[ 0 ];
@@ -70,9 +96,38 @@ function challenge1Part1() {
 }
 
 function challenge1Part2() {
-    $calibration    = fopen( './data/1.txt', 'r' );
-    $total_sum      = 0;
+    $calibration                    = fopen( './data/1.txt', 'r' );
+    $total_sum                      = 0;
+    
     if( $calibration ) {
+        while( ( $buffer = fgets( $calibration ) ) !== false ) {
+            $digits         = [];
+            $length         = strlen( $buffer );
+            $digits_found   = 0;
+            $char_buffer    = "";
+            for( $i = 0; $i < $length; $i++ ) {
+                $char = $buffer[$i];
+                if( is_numeric( $char ) ) {
+                    storeDigit($digits, $digits_found, $char);
+                    $char_buffer = "";
+                }
+                else {
+                    $char_buffer .= $char;
+                    $key = findNumberAsText( $char_buffer );
+                    //printf( "Found a number: %s || %s \r\n", $key, $char_buffer );
+                    if( $key !== 0 ) {
+                        storeDigit($digits, $digits_found, $key);
+                        $char_buffer = substr( $char_buffer, -1 );
+                    }
+                }
+            }
+            if( $digits_found === 1 && intval( $digits[ 1 ] ) === 0 ) {
+                $digits[ 1 ] = $digits[ 0 ];
+            } 
+            $total_line = intval( implode( "", $digits ) );
+            $total_sum += $total_line;
+            printf( "Line sum is: %d. Digit 1: %d. Digit 2: %d. Found: %d \r\n", $total_line, $digits[ 0 ], $digits[ 1 ], $digits_found );
+        }
         fclose( $calibration );
         printf( "Total part 2 is: %d", $total_sum );
     }    
