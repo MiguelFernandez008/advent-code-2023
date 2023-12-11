@@ -23,13 +23,13 @@
 
  function challenge2() {
     $calibration    = fopen( './data/2.txt', 'r' );
-    $total_sum      = 0;
+    $total_games    = 0;
     if( $calibration ) {
         while( ( $buffer = fgets( $calibration ) ) !== false ) {
 
         }
         fclose( $calibration );
-        printf( "Total games are: %d", $total_sum );
+        printf( "Total games are: %d", $total_games );
     }
  }
 
