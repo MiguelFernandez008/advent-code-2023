@@ -1,13 +1,13 @@
-Utils = {
+Data = {
     file = nill
 }
 
-function Utils:open(name)
+function Data:open(name)
     local path = "./data/" .. name .. ".txt"
     self.file = io.open(path, "r")
 end
 
-function Utils:lines()
+function Data:lines()
     local lines = {}
     for l in self.file:lines() do
         table.insert(lines, l) 
@@ -15,8 +15,8 @@ function Utils:lines()
     return lines
 end
 
-function Utils:close()
+function Data:close()
     self.file:close()
 end
 
-return Utils
+return Data
